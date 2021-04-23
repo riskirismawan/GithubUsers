@@ -32,12 +32,6 @@ class ListFavoriteAdapter(private val activity: Activity) : RecyclerView.Adapter
         notifyDataSetChanged()
     }
 
-    fun removeItem(position: Int) {
-        this.mData.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, this.mData.size)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_favorite, parent, false)
         return ListViewHolder(view)
@@ -75,7 +69,7 @@ class ListFavoriteAdapter(private val activity: Activity) : RecyclerView.Adapter
                         val intent = Intent(activity, UserActivity::class.java)
                         intent.putExtra(UserActivity.EXTRA_POSITION, position)
                         intent.putExtra(UserActivity.EXTRA_DATA, user)
-                        activity.startActivityForResult(intent, UserActivity.REQUEST_UPDATE)
+                        activity.startActivity(intent)
                     }
                 }))
 

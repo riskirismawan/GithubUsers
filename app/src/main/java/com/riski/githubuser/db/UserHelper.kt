@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import com.riski.githubuser.db.DatabaseContract.UserColumns.Companion.TABLE_NAME
 import com.riski.githubuser.db.DatabaseContract.UserColumns.Companion.USERNAME
-import com.riski.githubuser.db.DatabaseContract.UserColumns.Companion._ID
 import kotlin.jvm.Throws
 
 class UserHelper(context: Context) {
@@ -45,7 +44,7 @@ class UserHelper(context: Context) {
             null,
             null,
             null,
-            "$_ID ASC",
+            "$USERNAME ASC",
             null
         )
     }
@@ -65,6 +64,10 @@ class UserHelper(context: Context) {
 
     fun insert(values: ContentValues?): Long {
         return database.insert(DATABASE_TABLE, null, values)
+    }
+
+    fun update(id: String, values: ContentValues?): Int {
+        return database.update(DATABASE_TABLE, values, "$USERNAME = ?", arrayOf(id))
     }
 
     fun deleteById(id: String): Int {

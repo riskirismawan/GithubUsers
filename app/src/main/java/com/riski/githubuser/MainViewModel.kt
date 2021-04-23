@@ -16,7 +16,7 @@ import org.json.JSONObject
 class MainViewModel : ViewModel() {
 
     val listUser = MutableLiveData<ArrayList<User>>()
-    private val token = "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"
+    private val token = "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"
 
     fun setUser(username: String, context: Context) {
         val listItem = ArrayList<User>()

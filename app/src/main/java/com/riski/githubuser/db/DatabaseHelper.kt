@@ -3,7 +3,7 @@ package com.riski.githubuser.db
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.riski.githubuser.db.DatabaseContract.*
+import com.riski.githubuser.db.DatabaseContract.UserColumns
 import com.riski.githubuser.db.DatabaseContract.UserColumns.Companion.TABLE_NAME
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -12,8 +12,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val DATABASE_NAME = "dbgithubapp"
         private const val DATABASE_VERSION = 1
         private const val SQL_CREATE_TABLE = "CREATE TABLE $TABLE_NAME" +
-                " (${UserColumns._ID} INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " ${UserColumns.USERNAME} TEXT NOT NULL," +
+                " (${UserColumns.USERNAME} TEXT PRIMARY KEY NOT NULL," +
                 " ${UserColumns.NAME} TEXT NOT NULL," +
                 " ${UserColumns.AVATAR} TEXT NOT NULL," +
                 " ${UserColumns.COMPANY} TEXT NOT NULL," +

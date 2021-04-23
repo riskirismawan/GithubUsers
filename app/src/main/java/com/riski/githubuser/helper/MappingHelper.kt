@@ -5,12 +5,11 @@ import com.riski.githubuser.db.DatabaseContract
 import com.riski.githubuser.user.User
 
 object MappingHelper {
-    fun mapCursorToArrayList(noteCursor: Cursor?): ArrayList<User> {
+    fun mapCursorToArrayList(userCursor: Cursor?): ArrayList<User> {
         val userList = ArrayList<User>()
 
-        noteCursor?.apply {
+        userCursor?.apply {
             while (moveToNext()) {
-                val id = getInt(getColumnIndexOrThrow(DatabaseContract.UserColumns._ID))
                 val username = getString(getColumnIndexOrThrow(DatabaseContract.UserColumns.USERNAME))
                 val name = getString(getColumnIndexOrThrow(DatabaseContract.UserColumns.NAME))
                 val avatar = getString(getColumnIndexOrThrow(DatabaseContract.UserColumns.AVATAR))
@@ -21,7 +20,7 @@ object MappingHelper {
                 val following = getString(getColumnIndexOrThrow(DatabaseContract.UserColumns.FOLLOWING))
                 val totalFollower = getInt(getColumnIndexOrThrow(DatabaseContract.UserColumns.TOTAL_FOLLOWER))
                 val totalFollowing = getInt(getColumnIndexOrThrow(DatabaseContract.UserColumns.TOTAL_FOLLOWING))
-                userList.add(User(id, username, name, avatar, company, location, repository, follower, following, totalFollower, totalFollowing))
+                userList.add(User(username, name, avatar, company, location, repository, follower, following, totalFollower, totalFollowing))
             }
         }
         return userList

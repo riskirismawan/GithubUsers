@@ -1,11 +1,10 @@
 package com.riski.githubuser.user
 
 import android.content.ContentValues
-import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModelProvider
@@ -16,17 +15,16 @@ import com.riski.githubuser.R
 import com.riski.githubuser.follow.SectionsPagerAdapter
 import com.riski.githubuser.databinding.ActivityUserBinding
 import com.riski.githubuser.db.DatabaseContract
-import com.riski.githubuser.db.UserHelper
+import com.riski.githubuser.db.DatabaseContract.UserColumns.Companion.CONTENT_URI
 import com.riski.githubuser.favorite.ListFavoriteAdapter
 import com.riski.githubuser.helper.MappingHelper
-import kotlinx.coroutines.*
 
 class UserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityUserBinding
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var favoriteHelper: UserHelper
     private lateinit var favoriteAdapter: ListFavoriteAdapter
+    private lateinit var uriWithId: Uri
 
     private var position = 0
     private var user: User? = null
@@ -34,8 +32,6 @@ class UserActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_DATA = ""
         const val EXTRA_POSITION = "extra_position"
-        const val REQUEST_UPDATE = 200
-        const val RESULT_DELETE = 301
 
         @StringRes
         private val TAB_TITLES = intArrayOf(
@@ -53,8 +49,6 @@ class UserActivity : AppCompatActivity() {
         supportActionBar?.title = getString(R.string.app_name_user)
 
         mainViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(MainViewModel::class.java)
-        favoriteHelper = UserHelper.getInstance(applicationContext)
-        favoriteHelper.open()
 
         favoriteAdapter = ListFavoriteAdapter(this)
 
@@ -81,36 +75,26 @@ class UserActivity : AppCompatActivity() {
         binding.tvDetailFollowing.text = following
         binding.tvDetailRepository.text = repo
 
+        uriWithId = Uri.parse(CONTENT_URI.toString() + "/" + user?.username)
         var isFavorite = false
-        favoriteHelper.open()
-        CoroutineScope(Dispatchers.IO).launch {
-            val cursor = user?.username?.let { favoriteHelper.queryById(it) }
-            val item = MappingHelper.mapCursorToArrayList(cursor)
-            withContext(Dispatchers.Main) {
-                if (item.size > 0) {
-                    binding.fabFavorite.setImageResource(R.drawable.ic_baseline_close_24)
-                    isFavorite = true
-                } else {
-                    binding.fabFavorite.setImageResource(R.drawable.ic_baseline_favorite_24)
-                    isFavorite = false
-                }
+
+        val cursor = contentResolver.query(uriWithId, null, null, null, null)
+        if (cursor != null) {
+            val users = MappingHelper.mapCursorToArrayList(cursor)
+            isFavorite = if (users.size > 0) {
+                binding.fabFavorite.setImageResource(R.drawable.ic_baseline_close_24)
+                true
+            } else {
+                binding.fabFavorite.setImageResource(R.drawable.ic_baseline_favorite_24)
+                false
             }
         }
 
         binding.fabFavorite.setOnClickListener {
             if (isFavorite) {
-                val result = user?.username?.let { it1 -> favoriteHelper.deleteById(it1) }
-                if (result != null) {
-                    if (result > 0) {
-                        val intent = Intent()
-                        intent.putExtra(EXTRA_POSITION, position)
-                        setResult(RESULT_DELETE, intent)
-                        isFavorite = !isFavorite
-                        binding.fabFavorite.setImageResource(R.drawable.ic_baseline_favorite_24)
-                    } else {
-                        Toast.makeText(this@UserActivity, "Gagal menghapus data", Toast.LENGTH_SHORT).show()
-                    }
-                }
+                contentResolver.delete(uriWithId, null, null)
+                isFavorite = !isFavorite
+                binding.fabFavorite.setImageResource(R.drawable.ic_baseline_favorite_24)
             } else {
                 val values = ContentValues()
                 values.put(DatabaseContract.UserColumns.USERNAME, user?.username)
@@ -124,13 +108,9 @@ class UserActivity : AppCompatActivity() {
                 values.put(DatabaseContract.UserColumns.TOTAL_FOLLOWER, user?.totalFollower)
                 values.put(DatabaseContract.UserColumns.TOTAL_FOLLOWING, user?.totalFollowing)
 
-                val result = favoriteHelper.insert(values)
-                if (result > 0) {
-                    isFavorite = !isFavorite
-                    binding.fabFavorite.setImageResource(R.drawable.ic_baseline_close_24)
-                } else {
-                    Toast.makeText(this@UserActivity, "Gagal menambah data", Toast.LENGTH_SHORT).show()
-                }
+                contentResolver.insert(CONTENT_URI, values)
+                isFavorite = !isFavorite
+                binding.fabFavorite.setImageResource(R.drawable.ic_baseline_close_24)
             }
         }
 

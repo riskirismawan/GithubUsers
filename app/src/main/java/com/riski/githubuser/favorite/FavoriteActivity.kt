@@ -1,17 +1,18 @@
 package com.riski.githubuser.favorite
 
-import android.content.Intent
+import android.database.ContentObserver
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.riski.githubuser.R
 import com.riski.githubuser.databinding.ActivityFavoriteBinding
-import com.riski.githubuser.db.UserHelper
+import com.riski.githubuser.db.DatabaseContract.UserColumns.Companion.CONTENT_URI
 import com.riski.githubuser.helper.MappingHelper
 import com.riski.githubuser.user.User
-import com.riski.githubuser.user.UserActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -39,6 +40,18 @@ class FavoriteActivity : AppCompatActivity() {
         binding.rvFavorite.adapter = adapter
         binding.rvFavorite.setHasFixedSize(true)
 
+        val handlerThread = HandlerThread("DataObserver")
+        handlerThread.start()
+        val handler = Handler(handlerThread.looper)
+
+        val myObserver = object : ContentObserver(handler) {
+            override fun onChange(selfChange: Boolean) {
+                loadFavoriteAsync(adapter)
+            }
+        }
+
+        contentResolver.registerContentObserver(CONTENT_URI, true, myObserver)
+
         if (savedInstanceState == null) {
             loadFavoriteAsync(adapter)
         } else {
@@ -63,10 +76,8 @@ class FavoriteActivity : AppCompatActivity() {
     private fun loadFavoriteAsync(adapter: ListFavoriteAdapter) {
         GlobalScope.launch(Dispatchers.Main) {
             showLoading(true)
-            val favoriteHelper = UserHelper.getInstance(applicationContext)
-            favoriteHelper.open()
             val diferredUsers = async(Dispatchers.IO) {
-                val cursor = favoriteHelper.queryAll()
+                val cursor = contentResolver.query(CONTENT_URI, null, null, null, null)
                 MappingHelper.mapCursorToArrayList(cursor)
             }
             showLoading(false)
@@ -77,28 +88,11 @@ class FavoriteActivity : AppCompatActivity() {
                 adapter.setData(ArrayList())
                 Snackbar.make(binding.rvFavorite, resources.getString(R.string.no_data), Snackbar.LENGTH_SHORT).show()
             }
-            favoriteHelper.close()
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelableArrayList(EXTRA_STATE, adapter.mData)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (data != null) {
-            when (requestCode) {
-                UserActivity.REQUEST_UPDATE ->
-                    when (resultCode) {
-                        UserActivity.RESULT_DELETE -> {
-                            val position = data.getIntExtra(UserActivity.EXTRA_POSITION, 0)
-                            adapter.removeItem(position)
-                        }
-                    }
-            }
-        }
     }
 }
