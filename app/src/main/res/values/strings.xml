@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Github</string>
+    <string name="app_name_user">Detail User</string>
+    <string name="name">Github Name</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="username">Username</string>
+    <string name="company">Company</string>
+    <string name="location">Location</string>
+    <string name="repository">Repository</string>
+    <string name="follow">Follow</string>
+    <string name="search">Search</string>
+    <string name="setting">Setting</string>
+    <string name="no">No</string>
+    <string name="user_image">User Image</string>
+    <string name="favorite">Favorite</string>
+    <string name="delete">Delete</string>
+    <string name="reminder">Reminder</string>
+    <string name="reminder_time">Reminder Time</string>
+    <string name="set_reminder">Set Reminder</string>
+    <string name="cancel_reminder">Cancel Reminder</string>
+    <string name="set_remainder_to_open_aplication">Set remainder to open application</string>
+    <string name="no_data">No data at this time</string>
+</resources>

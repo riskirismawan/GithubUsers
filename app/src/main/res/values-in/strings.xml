@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Github</string>
+    <string name="app_name_user">Detail Pengguna</string>
+    <string name="name">Nama Github</string>
+    <string name="followers">Pengikut</string>
+    <string name="following">Mengikuti</string>
+    <string name="username">Name Pengguna</string>
+    <string name="company">Perusahaan</string>
+    <string name="location">Lokasi</string>
+    <string name="repository">Repository</string>
+    <string name="follow">Ikut</string>
+    <string name="search">Cari</string>
+    <string name="setting">Pengaturan</string>
+    <string name="no">Tidak</string>
+    <string name="user_image">Gambar Pengguna</string>
+    <string name="favorite">Favorit</string>
+    <string name="delete">Hapus</string>
+    <string name="reminder">Pengingat</string>
+    <string name="reminder_time">Waktu Pengingat</string>
+    <string name="set_reminder">Atur Pengingat</string>
+    <string name="cancel_reminder">Batalkan Pengingat</string>
+    <string name="set_remainder_to_open_aplication">Atur pengingat untuk membuka aplikasi</string>
+    <string name="no_data">Tidak ada data saat ini</string>
+</resources>

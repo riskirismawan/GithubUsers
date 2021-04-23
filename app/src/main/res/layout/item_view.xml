@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border"
+    android:padding="16dp"
+    android:layout_marginBottom="8dp">
+
+    <ImageView
+        android:id="@+id/img_user"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:src="@color/teal_200"
+        android:contentDescription="@string/user_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        style="@style/LightText"
+        android:layout_marginBottom="6dp"
+        android:layout_marginStart="24dp"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="@string/name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/img_user"/>
+
+    <TextView
+        android:id="@+id/tv_follower"
+        android:layout_width="wrap_content"
+        style="@style/LightText"
+        android:layout_marginStart="24dp"
+        android:maxLines="1"
+        android:text="@string/followers"
+        app:layout_constraintStart_toEndOf="@id/img_user"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_following"
+        android:layout_width="wrap_content"
+        style="@style/LightText"
+        android:layout_marginStart="16dp"
+        android:maxLines="1"
+        android:text="@string/following"
+        app:layout_constraintStart_toEndOf="@id/tv_follower"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
